@@ -1,18 +1,23 @@
-import { useTable, useSortBy, usePagination, Column } from "react-table";
+import { PropsWithChildren, ReactElement } from "react";
+import { useTable, useSortBy, usePagination, Column, TableOptions } from "react-table";
+import styled from "styled-components";
+import Pagination from "./Pagination";
+import TableBody from "./TableBody";
+import TableHeader from "./TableHeader";
 
-
-interface IProps {
-  columns: Array<Column>;
-  data: Array<object>;
+interface ITableDefaultProps<T extends object = {}> extends TableOptions<T> {};
+interface IProps<T extends object> extends ITableDefaultProps<T> {
   pagination?: boolean;
+  columns: Array<Column<T>>;
+  data: T[];
 }
 
-const Table: React.FC<IProps> = ({
+function Table<T extends object> ({
   columns,
   data,
   pagination,
-}) => {
-  const instance = useTable(
+}: PropsWithChildren<IProps<T>>): ReactElement {
+  const instance = useTable<T>(
     {
       columns,
       data,
@@ -21,117 +26,47 @@ const Table: React.FC<IProps> = ({
     usePagination
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    footerGroups,
-    prepareRow,
-    rows,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
-  } = instance;
-
   return (
-    <>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {pagination
-            ? page.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    )
-                  })}
-                </tr>
-              )}
-            ) : rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    )
-                  })}
-                </tr>
-              )}
-            )
-          }
-        </tbody>
-        <tfoot>
-          {footerGroups.map(group => (
-            <tr {...group.getFooterGroupProps()}>
-              {group.headers.map(column => (
-                <td {...column.getFooterProps()}>{column.render('Footer')}</td>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
-      {pagination && <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[50, 100, 250].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>}
-    </>
+    <Wrapper>
+      <TableWrapper>
+        <table {...instance.getTableProps()}>
+          <TableHeader
+            headerGroups={instance.headerGroups}
+          />
+          <TableBody
+            getTableBodyProps={instance.getTableBodyProps}
+            pagination={!!pagination}
+            prepareRow={instance.prepareRow}
+            rows={instance.rows}
+            page={instance.page}
+          />
+        </table>
+      </TableWrapper>
+      {pagination && <Pagination
+        canPreviousPage={instance.canPreviousPage}
+        canNextPage={instance.canNextPage}
+        pageOptions={instance.pageOptions}
+        pageCount={instance.pageCount}
+        gotoPage={instance.gotoPage}
+        nextPage={instance.nextPage}
+        previousPage={instance.previousPage}
+        setPageSize={instance.setPageSize}
+        pageIndex={instance.state.pageIndex}
+        pageSize={instance.state.pageSize}
+      />}
+    </Wrapper>
   )
 }
 
 export default Table;
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;

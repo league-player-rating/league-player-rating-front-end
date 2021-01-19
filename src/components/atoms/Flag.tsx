@@ -3,13 +3,14 @@ import nationalities from "../../constants/nationalities";
 
 interface IProps {
   country: string;
+  height?: number
 }
 
-const Flag: React.FC<IProps> = ({ country }) => {
+const Flag: React.FC<IProps> = ({ country, height }) => {
   return (
     <Image
       src={`https://flagcdn.com/h20/${nationalities[country]}.png`}
-      height="20"
+      height={height || 20}
       alt={country}
     />
   )
