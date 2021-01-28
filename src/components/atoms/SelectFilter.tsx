@@ -29,9 +29,11 @@ const Select = styled.select`
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
   background-color: #FFFFFF;
   outline: none;
-  padding: 12px;
-  font-size: 16px;
+  padding: 8px;
+  margin: 8px 0px;
+  font-size: 14px;
   color: ${({ value }) => value ? "black" : "#75758A"};
+  width: 100%;
 
   > option {
     color: black;

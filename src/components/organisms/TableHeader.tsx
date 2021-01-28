@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactElement } from "react";
 import { HeaderGroup } from "react-table";
 import styled from "styled-components";
+import Chevron from "../atoms/Chevron";
 
 interface IProps<T extends object> {
   headerGroups: HeaderGroup<T>[]
@@ -12,7 +13,7 @@ function TableHeader <T extends object> ({
   return (
     <thead>
       {headerGroups.map(headerGroup => (
-        <tr {...headerGroup.getHeaderGroupProps()}>
+        <Row {...headerGroup.getHeaderGroupProps()}>
           {headerGroup.headers.map(column => {
             return (
               <Cell
@@ -20,17 +21,15 @@ function TableHeader <T extends object> ({
                 width={column.width}
               >
                 {column.render('Header')}
-                <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? ' 🔽'
-                      : ' 🔼'
-                    : ''}
-                </span>
+                {column.isSorted
+                  ? column.isSortedDesc
+                    ? <Chevron rotate />
+                    : <Chevron />
+                  : ''}
               </Cell>
             )
           })}
-        </tr>
+        </Row>
       ))}
     </thead>
   )
@@ -38,6 +37,12 @@ function TableHeader <T extends object> ({
 
 export default TableHeader;
 
+const Row = styled.tr`
+  border-bottom: 1px solid #707070;
+`;
+
 const Cell = styled.th<{ width?: string | number}>`
-  width: ${({ width }) => width ? typeof width === "number" ? `${width}px` : width : "auto"};
+  text-align: left;
+  padding-bottom: 4px;
+  font-weight: 500;
 `;

@@ -31,10 +31,19 @@ const Wrapper = styled.div<IProps>`
   background-position: center center;
   background-size: cover;
   color: #FFFFFF;
+
   padding: 60px 120px;
   min-height: ${({ small }) => small ? "320px" : "640px"};
   position: relative;
   box-shadow: 0 13px 18px 9px rgba(0, 0, 0, 0.2);
+
+  @media screen and (max-width: 1450px) {
+    padding: 60px 6vw;
+  }
+
+  @media screen and (max-width: 650px) {
+    padding: 60px 2vw;
+  }
 `;
 
 const StyledHeader = styled(Header)<{ home?: boolean; }>`

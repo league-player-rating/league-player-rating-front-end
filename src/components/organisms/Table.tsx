@@ -1,23 +1,26 @@
 import { PropsWithChildren, ReactElement } from "react";
-import { useTable, useSortBy, usePagination, Column, TableOptions } from "react-table";
+import { useTable, useSortBy, usePagination, TableOptions } from "react-table";
 import styled from "styled-components";
 import Pagination from "./Pagination";
 import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
 
 interface ITableDefaultProps<T extends object = {}> extends TableOptions<T> {};
+
 interface IProps<T extends object> extends ITableDefaultProps<T> {
   pagination?: boolean;
-  columns: Array<Column<T>>;
-  data: T[];
 }
 
-function Table<T extends object> ({
-  columns,
-  data,
-  pagination,
-}: PropsWithChildren<IProps<T>>): ReactElement {
-  const instance = useTable<T>(
+const Table =
+  <T extends object>
+  ({
+    columns,
+    data,
+    pagination,
+  }
+  : PropsWithChildren<IProps<T>>
+  ): ReactElement => {
+  const instance = useTable(
     {
       columns,
       data,
@@ -29,7 +32,7 @@ function Table<T extends object> ({
   return (
     <Wrapper>
       <TableWrapper>
-        <table {...instance.getTableProps()}>
+        <TableEntity {...instance.getTableProps()}>
           <TableHeader
             headerGroups={instance.headerGroups}
           />
@@ -40,7 +43,7 @@ function Table<T extends object> ({
             rows={instance.rows}
             page={instance.page}
           />
-        </table>
+        </TableEntity>
       </TableWrapper>
       {pagination && <Pagination
         canPreviousPage={instance.canPreviousPage}
@@ -61,6 +64,7 @@ function Table<T extends object> ({
 export default Table;
 
 const Wrapper = styled.div`
+  padding: 20px 0;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -69,4 +73,8 @@ const Wrapper = styled.div`
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
+`;
+
+const TableEntity = styled.table`
+  border-collapse: collapse;
 `;

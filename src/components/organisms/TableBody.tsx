@@ -52,5 +52,6 @@ function TableBody<T extends object> ({
 export default TableBody;
 
 const Cell = styled.td<{width?: string | number }>`
-  width: ${({ width }) => width ? width : "auto"};
+  text-align: left;
+  padding: 8px 0;
 `;

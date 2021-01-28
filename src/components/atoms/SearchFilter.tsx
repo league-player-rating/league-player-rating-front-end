@@ -20,10 +20,13 @@ export default SearchFilter;
 
 const Input = styled.input`
   border: none;
+  width: 100%;
   border-radius: 4px;
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.15);
   background-color: #FFFFFF;
   outline: none;
-  padding: 12px;
-  font-size: 16px;
+  box-sizing: border-box;
+  padding: 8px;
+  margin: 8px 0px;
+  font-size: 14px;
 `;

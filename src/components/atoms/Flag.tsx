@@ -3,14 +3,16 @@ import nationalities from "../../constants/nationalities";
 
 interface IProps {
   country: string;
-  height?: number
+  height?: number;
+  noRound?: boolean;
 }
 
-const Flag: React.FC<IProps> = ({ country, height }) => {
+const Flag: React.FC<IProps> = ({ country, height, noRound }) => {
   return (
     <Image
-      src={`https://flagcdn.com/h20/${nationalities[country]}.png`}
-      height={height || 20}
+      src={`https://flagcdn.com/h40/${nationalities[country]}.png`}
+      noRound={noRound}
+      height={height || 40}
       alt={country}
     />
   )
@@ -18,6 +20,15 @@ const Flag: React.FC<IProps> = ({ country, height }) => {
 
 export default Flag;
 
-const Image = styled.img`
-
+const Image = styled.img<{ noRound?: boolean; }>`
+  ${({ noRound, height }) => noRound
+    ? ``
+    : `
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+      border-radius: 50%;
+      object-fit: cover;
+      height: ${height}px;
+      width: ${height}px;
+    `
+  }
 `;

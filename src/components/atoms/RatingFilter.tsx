@@ -38,7 +38,8 @@ const RatingFilter: React.FC<IProps> = ({ updateValue, metric, value }) => {
 export default RatingFilter;
 
 const Container = styled.div`
-  width: 400px;
+  width: 100%;
+  margin: 8px 0px;
 `;
 
 const Wrapper = styled.div`
@@ -52,9 +53,10 @@ const RangeVals = styled.p`
   margin: 0 18px;
 `;
 
-const FilterTitle = styled.h3`
+const FilterTitle = styled.p`
   text-align: center;
   font-size: 1em;
+  font-weight: bold;
   margin-top: 2px;
   margin-bottom: 0;
 `;

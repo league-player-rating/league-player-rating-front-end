@@ -1,37 +1,28 @@
 import { useState } from "react";
+import styled from "styled-components";
 
 import SearchFilter from "../components/atoms/SearchFilter";
 import RatingFilter from "../components/atoms/RatingFilter";
-import TableLink from "../components/atoms/TableLink";
-import Flag from "../components/atoms/Flag";
+import FilterContainer from "../components/atoms/FilterContainer";
 
 import Hero from "../components/molecules/Hero";
 import BodyContainer from "../components/molecules/BodyContainer";
 import RegionsFilter from "../components/molecules/RegionsFilter";
-import NationalitiesFilter from "../components/molecules/NationalitiesFilter";
 import CardContainer from "../components/molecules/CardContainer";
+import Shield from "../components/molecules/Shield";
 
-import Table from "../components/organisms/Table";
+import TeamOverviewTable, { IData } from "../components/Tables/TeamOverviewTable";
 
 import useQueryHandler from "../utils/useQueryHandler";
 import useDebounce from "../utils/useDebounce";
+import groupSort from "../utils/groupSort";
 
 import TeamHeadingBG from "../assets/teams-heading.png";
-// import RegionLogo from "../assets/leagues-tables/RegionLogo";
-
-interface IData {
-  id: number;
-  team_src: string;
-  team: string;
-  nationality: string;
-  region: string;
-  player_rating: number;
-}
+import RegionLogo from "../assets/leagues-tables/RegionLogo";
 
 const TeamOverview = () => {
   const [searchText, setSearchText] = useState("");
   const [region, setRegion] = useState("");
-  const [nationality, setNationality] = useState("");
   const [playerRating, setPlayerRating] = useState({
     min: 0,
     max: 100
@@ -47,14 +38,15 @@ const TeamOverview = () => {
     {
       searchText: useDebounce(searchText),
       region,
-      nationality,
       minPlayerRating: useDebounce(playerRating.min),
       maxPlayerRating: useDebounce(playerRating.max),
     }
   );
 
-  let returnedData = data && data.data;
+  let returnedData = data?.data;
 
+  const groupedData = returnedData && groupSort<IData>(returnedData, "region");
+  console.log(groupedData);
   return (
     <div>
       <Hero small background={TeamHeadingBG}>
@@ -62,51 +54,50 @@ const TeamOverview = () => {
       </Hero>
       <BodyContainer>
         <CardContainer fullWidth>
-          <SearchFilter value={searchText} updateValue={(str: string) => setSearchText(str)} />
-          <RegionsFilter value={region} updateValue={(str: string) => setRegion(str)} />
-          <NationalitiesFilter value={nationality} updateValue={(str: string) => setNationality(str)} />
-          <RatingFilter metric="Player" value={playerRating} updateValue={(min: number, max: number) => setPlayerRating({ min, max })} />
+          <FilterContainer>
+            <SearchFilter value={searchText} updateValue={(str: string) => setSearchText(str)} />
+            <RegionsFilter value={region} updateValue={(str: string) => setRegion(str)} />
+            <RatingFilter metric="Player" value={playerRating} updateValue={(min: number, max: number) => setPlayerRating({ min, max })} />
+          </FilterContainer>
         </CardContainer>
-        <CardContainer fullWidth>
-          {loading && <p>Loading...</p>}
-          {error && <p>Oops! Something went wrong. Maybe try refreshing the page?</p>}
-          {returnedData && <Table<IData>
-            data={returnedData}
-            columns={[
-              {
-                Header: "",
-                accessor: "team_src",
-                width: 180,
-                Cell: ({ value, row }) => <img src={value} alt={row.original.team} />
-              },
-              {
-                Header: "Name",
-                accessor: "team",
-                width: 260,
-                Cell: ({ value, row }) => <TableLink to={`/teams/${row.original.id}`}>{value}</TableLink>
-              },
-              {
-                Header: "Region",
-                accessor: "region",
-                width: 180,
-              },
-              {
-                Header: "HQ Location",
-                accessor: "nationality",
-                width: 180,
-                Cell: ({ value }) => <Flag country={value} height={32} />
-              },
-              {
-                Header: "Player Rating",
-                accessor: "player_rating",
-                width: 180
-              },
-            ]}
-          />}
-        </CardContainer>
+        {(loading || error) && (
+          <CardContainer fullWidth>
+            {loading && <p>Loading...</p>}
+            {error && <p>Oops! Something went wrong. Maybe try refreshing the page?</p>}
+          </CardContainer>
+        )}
+        {groupedData && Object.keys(groupedData).map((el) => {
+          const totalCombinedRating = groupedData[el].reduce((acc: number | IData, curr: IData) => {
+            const total = typeof acc === "number" ? acc : Number(acc.team_rating);
+            return total + Number(curr.team_rating)
+          });
+          const leagueRating = Math.round(totalCombinedRating/groupedData[el].length)
+          return (
+            <CardContainer fullWidth key={el} marginOverride="64px">
+              <Wrapper>
+                <RegionLogo region={el} height={100} />
+                <Shield metric="League" value={leagueRating} variant="Big" />
+              </Wrapper>
+              <TeamOverviewTable data={groupedData[el]} />
+            </CardContainer>
+          );
+        })}
       </BodyContainer>
     </div>
   );
 }
 
 export default TeamOverview;
+
+const Wrapper = styled.div`
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 40px;
+  top: -54px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;

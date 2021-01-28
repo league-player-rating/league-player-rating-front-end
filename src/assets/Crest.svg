@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="264.011" height="313.246" viewBox="0 0 264.011 313.246">
+  <defs>
+    <filter id="Crest" x="0" y="0" width="264.011" height="313.246" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Crest)">
+    <path id="Crest-2" data-name="Crest" d="M-8646.036-21612.426c.081-8.8-112.723-55.352-112.723-55.352s-9.982-214.246-9.8-214.129c114.589-31.82,129.264-31.51,241.945,0-.368-.227-11.287,214.129-11.287,214.129S-8645.955-21621.252-8646.036-21612.426Z" transform="translate(8779.63 21913.65)" fill="#924a13" stroke="#7e4010" stroke-width="4"/>
+  </g>
+</svg>

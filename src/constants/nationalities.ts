@@ -238,7 +238,7 @@ const nationalities: {[key: string]: string} = {
   "United Arab Emirates": "ae",
   "United Kingdom": "gb",
   "United Nations": "un",
-  "United States": "us",
+  "United States of America": "us",
   "United States Minor Outlying Islands": "um",
   "United States Virgin Islands": "vi",
   "Uruguay": "uy",
