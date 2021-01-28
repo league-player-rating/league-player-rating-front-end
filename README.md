@@ -8,4 +8,5 @@ Front-end of the LOL Player Rating project
 - [x] Teams & Regions Overview (ROOT/teams)
 - [ ] Teams (ROOT/teams/<number>)
   
-TODO: https://trello.com/b/759Qo8M5/league-of-legends-player-rating
+# TODO: 
+https://trello.com/b/759Qo8M5/league-of-legends-player-rating
